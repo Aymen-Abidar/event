@@ -1,6 +1,7 @@
 import { CalendarDays, MapPin, Trash2 } from "lucide-react";
 import { StatusBadge } from "@/components/StatusBadge";
-import { createBookingAction, deleteBookingAction } from "@/app/(dashboard)/_actions";
+import { deleteBookingAction } from "@/app/(dashboard)/_actions";
+import { BookingForm } from "./booking-form";
 import { requireTenant } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { moneyMAD } from "@/lib/utils";
@@ -25,42 +26,7 @@ export default async function BookingsPage() {
         <p className="mt-2 max-w-2xl text-stone-500">Événements, dates de livraison, retour, avance, reste, services et statuts.</p>
       </div>
 
-      <form action={createBookingAction} className="premium-card grid gap-4 p-5 md:grid-cols-6">
-        <select className="input md:col-span-2" name="client_id" required defaultValue="">
-          <option value="" disabled>Choisir un client</option>
-          {(clients || []).map((client) => <option key={client.id} value={client.id}>{client.full_name} — {client.phone}</option>)}
-        </select>
-        <select className="input" name="event_type" defaultValue="wedding">
-          <option value="wedding">Mariage</option>
-          <option value="engagement">Fiançailles</option>
-          <option value="birthday">Anniversaire</option>
-          <option value="corporate">Entreprise</option>
-          <option value="party">Fête</option>
-          <option value="other">Autre</option>
-        </select>
-        <input className="input" name="event_date" type="date" required />
-        <input className="input" name="delivery_date" type="date" required />
-        <input className="input" name="return_date" type="date" required />
-        <input className="input md:col-span-3" name="location_address" placeholder="Adresse de livraison / événement" required />
-        <select className="input" name="material_id" required defaultValue="">
-          <option value="" disabled>Matériel</option>
-          {(materials || []).map((item) => <option key={item.id} value={item.id}>{item.name} — {moneyMAD(item.rental_price)}</option>)}
-        </select>
-        <input className="input" name="quantity" type="number" min="1" placeholder="Qté" required />
-        <input className="input" name="unit_price" type="number" min="0" step="0.01" placeholder="Prix unité" required />
-        <input className="input md:col-span-2" name="service_name" placeholder="Service optionnel ex: livraison" />
-        <input className="input" name="service_price" type="number" min="0" step="0.01" placeholder="Prix service" />
-        <input className="input" name="avance_paid" type="number" min="0" step="0.01" placeholder="Avance" />
-        <select className="input" name="status" defaultValue="pending">
-          <option value="pending">En attente</option>
-          <option value="confirmed">Confirmée</option>
-          <option value="delivered">Livrée</option>
-          <option value="returned">Retournée</option>
-          <option value="cancelled">Annulée</option>
-        </select>
-        <textarea className="input md:col-span-5" name="notes" rows={2} placeholder="Notes" />
-        <button className="btn-primary">Créer</button>
-      </form>
+      <BookingForm clients={clients || []} materials={materials || []} />
 
       <div className="space-y-4">
         {(bookings || []).length === 0 ? (
